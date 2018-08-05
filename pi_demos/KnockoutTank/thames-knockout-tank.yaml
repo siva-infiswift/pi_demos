@@ -1,0 +1,28 @@
+pi:
+  name: thames-knockout-tank
+  print_debug_messages: True
+  timers:
+    main_loop_delay: 3.0
+    mqtt_publish_rate: 2.0
+
+internet_connection_check:
+  url: http://www.google.com
+
+mqtt_broker:
+  host: mqtt-broker.infiswift.tech
+  fallback: 192.168.1.109
+  port: 1883
+
+mqtt_client:
+  client_id: 8f8c2b282f8b4c31a50fc61ef7cd5148
+  username: SzMRueU
+  password: fd4991c3-1a3e-4486-821e-489416de8dd2
+
+topics:
+  publish:
+    knockout_tank_status: /infiswift.com/stream/version/1/id/8f8c2b282f8b4c31a50fc61ef7cd5148/name/knockouttankstatus
+    tank_oil_volume: /infiswift.com/stream/version/1/id/8f8c2b282f8b4c31a50fc61ef7cd5148/name/oilvolume
+    tank_water_volume: /infiswift.com/stream/version/1/id/8f8c2b282f8b4c31a50fc61ef7cd5148/name/watervolume
+  subscribe:
+    well_pump_production_volume: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/productionvolume
+    ui: spBv1.0/group/DDATA/edgenode/device

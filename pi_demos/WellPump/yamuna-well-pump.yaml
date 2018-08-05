@@ -1,0 +1,30 @@
+pi:
+  name: yamuna-well-pump
+  print_debug_messages: True
+  timers:
+    main_loop_delay: 3.0
+    mqtt_publish_rate: 2.0
+
+internet_connection_check:
+  url: http://www.google.com
+
+mqtt_broker:
+  host: mqtt-broker.infiswift.tech
+  fallback: 192.168.1.109
+  port: 1883
+
+mqtt_client:
+  client_id: 5d56df6c4f614925a4ae089392f0e477
+  username: N14lhsn
+  password: 1344f463-f368-4c7b-865e-52e1bb8fff57
+
+topics:
+  publish:
+    well_pump_speed: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/wellpumpspeed
+    pressure_threshold: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/pressurethreshold
+    well_pump_production_volume: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/productionvolume
+    well_pump_pressure: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/pressure
+    well_pump_temperature: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/temperature
+  subscribe:
+    well_pump_command: /infiswift.com/stream/version/1/id/628fd69f1c50402cad48491b042a9cfb/name/command
+    ui: spBv1.0/group/DDATA/edgenode/device
