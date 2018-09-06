@@ -34,7 +34,12 @@ class ConnectionHandler:
       self.broker_connection = broker_connection
 
    def on_connect(self):
-      pass
+      # Send Tank restart status message to indicate successful restart and connectivity to broker
+      msg = '{"gateway-name": "' + self.pi_config.get_name() + '", '
+      msg += '"system-time-ms-local": ' + str(time.time() * 1000)
+      msg += '"status": "1" }'
+      response = self.broker_connection.publish(msg, self.publish_topics_config.get_knockout_tank_status(),
+                                                qos=0, retain=True, check_for_completion=False)
 
 class PublishCallbackHandler:
    def __init__(self, pi_config, subscribe_topics_config, publish_topics_config):
