@@ -7,7 +7,7 @@ import time
 from threading import Lock
 from enum import Enum
 import json
-from random import randint
+import numpy
 
 class Subscription:
    def __init__(self, topic, qos):
@@ -127,7 +127,7 @@ class WellPumpPeriodicPublishHandler:
    # Temperature and pressure are to be randomly generated in the range of
    # +/- 10% of their current baseline values
    def generate_random_value_within_ten_percent_of(self, num):
-      return randint(int(0.9 * num), int(1.1 * num))
+      return num + numpy.random.choice([0, 1], p = [0.9, 0.1])
 
    def calculate_production_volume(self, pressure, speed):
       if speed == 0:

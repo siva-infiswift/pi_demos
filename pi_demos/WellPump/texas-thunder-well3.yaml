@@ -1,0 +1,30 @@
+pi:
+  name: texas-thunder-well3
+  print_debug_messages: True
+  timers:
+    main_loop_delay: 3.0
+    mqtt_publish_rate: 2.0
+
+internet_connection_check:
+  url: http://www.google.com
+
+mqtt_broker:
+  host: 192.168.2.200
+  fallback: preview-mqtt-broker.infiswift.tech
+  port: 1883
+
+mqtt_client:
+  client_id: b4e69dfb7d4c46dd8a26ea31de0bd4bf
+  username: idhsgEK
+  password: a82dfc32-7f18-4a67-b5d5-f4a23d0fcf85
+
+topics:
+  publish:
+    well_pump_speed: /infiswift.tech/stream/version/1/id/b4e69dfb7d4c46dd8a26ea31de0bd4bf/name/wellpumpspeed
+    pressure_threshold: /infiswift.tech/stream/version/1/id/b4e69dfb7d4c46dd8a26ea31de0bd4bf/name/pressurethreshold
+    well_pump_production_volume: /infiswift.tech/stream/version/1/id/b4e69dfb7d4c46dd8a26ea31de0bd4bf/name/productionvolume
+    well_pump_pressure: /infiswift.tech/stream/version/1/id/b4e69dfb7d4c46dd8a26ea31de0bd4bf/name/pressure
+    well_pump_temperature: /infiswift.tech/stream/version/1/id/b4e69dfb7d4c46dd8a26ea31de0bd4bf/name/temperature
+  subscribe:
+    well_pump_command: /infiswift.tech/stream/version/1/id/b4e69dfb7d4c46dd8a26ea31de0bd4bf/name/command
+    ui: spBv1.0/group/DDATA/edgenode/device

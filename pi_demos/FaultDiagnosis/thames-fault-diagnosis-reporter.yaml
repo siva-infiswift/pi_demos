@@ -1,0 +1,25 @@
+pi:
+  name: thames-fault-diagnosis-reporter
+  print_debug_messages: True
+  timers:
+    main_loop_delay: 3.0
+    mqtt_publish_rate: 2.0
+
+internet_connection_check:
+  url: http://www.google.com
+
+mqtt_broker:
+  host: mqtt-broker.infiswift.tech
+  fallback: 192.168.1.109
+  port: 1883
+
+mqtt_client:
+  client_id: 4954ce13737c4a0794c625b7b32d55da
+  username: p8kzG69
+  password: bb00480d-3389-4b6b-8703-32d3e1e6ce88
+
+topics:
+  publish:
+    fault_diagnosis_report: /infiswift.com/stream/version/1/id/4954ce13737c4a0794c625b7b32d55da/name/faultdiagnosisreport
+  subscribe:
+    ui: spBv1.0/group/DDATA/edgenode/device

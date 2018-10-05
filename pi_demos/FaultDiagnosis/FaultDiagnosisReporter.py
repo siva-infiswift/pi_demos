@@ -1,8 +1,4 @@
 #!/usr/bin/python3
-import sys
-sys.path.insert(0, "/home/pi/Sparkplug/client_libraries/python/")
-import sparkplug_b as sparkplug
-from sparkplug_b import *
 from PiConfigReader import Reader
 import MqttBrokerConnection
 import logging
@@ -10,6 +6,7 @@ import datetime
 import time
 from threading import Lock
 import json
+from FaultDetector import FaultDetector
 
 class Subscription:
    def __init__(self, topic, qos):
@@ -32,12 +29,7 @@ class ConnectionHandler:
       self.broker_connection = broker_connection
 
    def on_connect(self):
-      # Send Tank restart status message to indicate successful restart and connectivity to broker
-      msg = '{"gateway-name": "' + self.pi_config.get_name() + '", '
-      msg += '"system-time-ms-local": ' + str(time.time() * 1000)
-      msg += '"status": "1" }'
-      response = self.broker_connection.publish(msg, self.publish_topics_config.get_knockout_tank_status(), 
-                                                qos=0, retain=True, check_for_completion=False)
+      pass
 
 class PublishCallbackHandler:
    def __init__(self, pi_config, subscribe_topics_config, publish_topics_config):
@@ -51,46 +43,7 @@ class PublishCallbackHandler:
    def set_broker_connection(self, broker_connection):
       self.broker_connection = broker_connection
 
-   def get_knockout_tank_status(self):
-      with self.status_lock:
-         status = self.knockout_tank_status
-      return self.knockout_tank_status
-
-   def set_knockout_tank_status(self, status):
-      with self.status_lock:
-         self.knockout_tank_status = status
-
-   def calculate_water_cut(self, production_volume):
-    return (0.3 * production_volume, 0.7 * production_volume)
-
-   def send_volume_messages(self, volume):
-      # Compute water cut and publish oil and water level MQTT messages
-      (water_volume, oil_volume) = self.calculate_water_cut(volume)
-
-      msg = "{\"gateway-name\": \"" + self.pi_config.get_name() + "\", "
-      msg += "\"system-time-ms-local\": " + str(time.time()*1000) + ", "
-      msg +='"volume": "' + str(oil_volume) + '" '
-      msg += "}"
-      self.broker_connection.publish(msg, self.publish_topics_config.get_knockout_tank_oil_volume(), qos=0, retain=False, check_for_completion=False)
-      if self.pi_config.get_print_debug_messages():
-         logging.debug('MQTT Knockout Tank Oil Volume Msg: {}'.format(msg))
-
-      msg = "{\"gateway-name\": \"" + self.pi_config.get_name() + "\", "
-      msg += "\"system-time-ms-local\": " + str(time.time()*1000) + ", "
-      msg +='"volume": "' + str(water_volume) + '" '
-      msg += "}"
-      self.broker_connection.publish(msg, self.publish_topics_config.get_knockout_tank_water_volume(), qos=0, retain=False, check_for_completion=False)
-      if self.pi_config.get_print_debug_messages():
-         logging.debug('Knockout Tank Water Volume Msg: {}'.format(msg))
-     
    def handle(self, msg):
-      if msg.topic == self.subscribe_topics_config.get_well_pump_production_volume():
-         parsed_json = json.loads(str(msg.payload.decode('UTF-8')))
-         if 'volume' in parsed_json:
-            volume = float(parsed_json['volume'])
-            logging.debug("Set Volume to: {}".format(volume))
-            self.send_volume_messages(volume)
-
       if msg.topic == self.subscribe_topics_config.get_ui():
          # UI publishes in SparkPlug format, so parse it differently
          inboundPayload = sparkplug_b_pb2.Payload()
@@ -112,16 +65,15 @@ class PublishCallbackHandler:
 
 def main():
    # Initialize log file
-   log_filename = '/tmp/KnockoutTank_{date:%Y_%m_%d_%H:%M:%S}.log'.format( date=datetime.datetime.now() )
+   log_filename = '/tmp/FaultDiagnosisReporter_{date:%Y_%m_%d_%H:%M:%S}.log'.format( date=datetime.datetime.now() )
    logging.basicConfig(filename=log_filename,level=logging.DEBUG)
    print('Logging to: {}'.format(log_filename))
 
    # Read Pi Config
-   config_reader = Reader('knockout-tank.yaml')
+   config_reader = Reader('fault-diagnosis-reporter.yaml')
 
    # Add subscriptions to list 
    subscriptions = []
-   subscriptions.append(Subscription(config_reader.get_subscribe_topics_config().get_well_pump_production_volume(), 1))
    subscriptions.append(Subscription(config_reader.get_subscribe_topics_config().get_ui(), 0))
 
    # Create a connection handler
